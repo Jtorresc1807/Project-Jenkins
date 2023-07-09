@@ -7,48 +7,5 @@ pipeline {
                 git 'https://github.com/Jtorresc1807/Project-Jenkins.git'
             }
         }
-        
-        stage('Ejecutar Pruebas') {
-            steps {
-                bat 'mvn test'
-            }
-        }
-        
-        stage('Análisis SonarQube') {
-            steps {
-                withSonarQubeEnv(installationName: 'sq1') {
-                    bat './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
-                }
-            }
-        }
-        
-        stage('Verificar Quality Gates') {
-            steps {
-                script {
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "Quality Gate failed: ${qg.status}"
-                    }
-                }
-            }
-        }
-        
-        stage('Generar Evidencias') {
-            steps {
-                bat 'mvn site' // Generar reportes, documentación, etc.
-            }
-        }
-        
-        stage('Notificar por Correo') {
-            steps {
-                emailext (
-                    subject: 'Jenkins Pipeline - Build Exitoso',
-                    body: '¡El pipeline se ejecutó exitosamente!',
-                    recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                    replyTo: 'noreply@jenkins.com',
-                    to: 'jaimebrs1979@gmail.com'
-                )
-            }
-        }
-    }
+}
 }

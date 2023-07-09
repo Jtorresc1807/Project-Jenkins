@@ -9,8 +9,8 @@ pipeline {
       }
     }
         stage('Clonar Repositorio') {
-            steps {
-                git 'https://github.com/Jtorresc1807/Project-Jenkins.git'
+           steps {
+           git url: 'https://github.com/Jtorresc1807/Project-Jenkins.git'
             }
         }
 }

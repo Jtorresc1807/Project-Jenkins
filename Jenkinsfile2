@@ -1,0 +1,62 @@
+pipeline {
+  agent {
+    label 'linux' // Especifica un agente con la etiqueta 'linux' donde se ejecutará el pipeline
+  }
+
+options {
+    skipDefaultCheckout() // Evita la clonación del repositorio por defecto para tener un mayor control sobre el proceso de checkout
+  }
+
+parameters {
+    string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Specify the target environment') // Agrega un parámetro para seleccionar el entorno de destino
+    booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run tests during the build') // Agrega un parámetro booleano para habilitar o deshabilitar la ejecución de pruebas
+  }
+
+stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/Jtorresc1807/Project-Jenkins.git', branch: 'main' // Realiza un checkout personalizado del repositorio
+      }
+    }
+    
+   stage('Buil') {
+  steps {
+    bat 'mvn clean package'
+  }
+}
+
+   stage('Test') {
+when {
+      expression { params.RUN_TESTS == true } // Ejecuta esta etapa solo si el parámetro RUN_TESTS es verdadero
+      }
+      steps {
+        bat 'mvn test' // Ejecuta las pruebas utilizando Maven
+      }
+    }
+
+    stage('Deploy') {
+      when {
+        branch 'master' // Ejecuta esta etapa solo en la rama 'master'
+      }
+      environment {
+        ENV_VAR = 'some_value' // Establece una variable de entorno personalizada para esta etapa
+      }
+      steps {
+        script {
+          bat 'mvn deploy' // Realiza el despliegue utilizando Maven
+          echo "Deployed to ${params.ENVIRONMENT}" // Muestra un mensaje personalizado en la consola de Jenkins
+        }
+      }
+    }
+}
+
+  post {
+    success {
+      echo 'Build and deployment successful!' // Realiza acciones adicionales después de un pipeline exitoso
+    }
+    
+    failure {
+      echo 'Build or deployment failed!' // Realiza acciones adicionales después de un pipeline fallido
+    }
+  }
+}

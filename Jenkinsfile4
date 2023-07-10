@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    
+    stages {
+       stage('Checkout') {
+          steps {
+          git url: 'https://github.com/Jtorresc1807/Project-Jenkins.git', branch: 'main' // Realiza un checkout personalizado del repositorio
+      }
+    }
+               
+        stage('Generar Evidencias') {
+            steps {
+                bat 'mvn site' // Generar reportes, documentación, etc.
+            }
+        }
+        
+        stage('Notificar por Correo') {
+            steps {
+                emailext (
+                    subject: 'Jenkins Pipeline - Build Exitoso',
+                    body: '¡El pipeline se ejecutó exitosamente!',
+                    recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                    replyTo: 'noreply@jenkins.com',
+                    to: 'jaimebrs1979@gmail.com'
+                )
+            }
+        }
+    }
+}

@@ -7,7 +7,13 @@ pipeline {
           git url: 'https://github.com/Jtorresc1807/Project-Jenkins.git', branch: 'main' // Realiza un checkout personalizado del repositorio
       }
     }
-               
+
+     stage('Ejecutar Pruebas') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
         stage('Generar Evidencias') {
             steps {
                 bat 'mvn site' // Generar reportes, documentación, etc.

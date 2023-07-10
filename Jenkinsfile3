@@ -51,7 +51,7 @@ pipeline {
                     subject: 'Jenkins Pipeline - Build Exitoso',
                     body: '¡El pipeline se ejecutó exitosamente!',
                     recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                    replyTo: 'jaimebrs1979@gmail.com',
+                    replyTo: 'noreply@github.com',
                     to: 'jaimebrs1979@gmail.com'
                 )
             }
